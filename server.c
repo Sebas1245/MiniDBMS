@@ -111,7 +111,7 @@ int main() {
           continue;
         }
 
-        snprintf(serverReply, sizeof(serverReply), "Welcome");
+        snprintf(serverReply, sizeof(serverReply), "%s", clientMsg);
         send(new_socket, serverReply, sizeof(serverReply), 0);
       }
     }

@@ -43,14 +43,16 @@ int main(int argc, char const *argv[]) {
       if (recv(sock, serverMsg, sizeof(serverMsg), 0) > 0) {
         printf("Server: %s\n", serverMsg);
         isLoggedIn = atoi(serverMsg);
+        printf("Welcome to your MiniDBMS!\n");
       }
       continue;
     }
-    printf("MiniDBMS!\n");
+
+    printf("Type your query:\n");
     scanf("%s", clientReply);
     send(sock, clientReply, sizeof(clientReply), 0);
     if (recv(sock, serverMsg, sizeof(serverMsg), 0) > 0) {
-      printf("Server: %s\n", serverMsg);
+      printf("Query was: %s\n", serverMsg);
     }
   }
 
