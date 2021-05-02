@@ -48,7 +48,17 @@ int main(int argc, char const *argv[]) {
       continue;
     }
 
-    printf("Type your query:\n");
+    printf("Remember you must follow the following syntax (no spaces):\n");
+    printf("- Select:\n");
+    printf(
+        "\tselect;columnName,columnName2 | *(to print all "
+        "columns);tableName;[optional "
+        "where clause]columnName,operator,conditionValue\n");
+    printf("- Insert:\n");
+    printf("\tinsert;tableName;columnName1,columName2 | *;value1,value2\n");
+    printf("- Join:\n");
+    printf("\tjoin;columnName,columnName2 | *;tableName1,tableName2\n");
+    printf("Now, type your query:\n");
     scanf("%s", clientReply);
     send(sock, clientReply, sizeof(clientReply), 0);
     if (recv(sock, serverMsg, sizeof(serverMsg), 0) > 0) {
