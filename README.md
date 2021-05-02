@@ -19,10 +19,12 @@ gcc -O -o miniDBMS ./jsonparser/mjson/mjson.c ./jsonparser/structsmappings.c mai
 In this project [microjson](https://gitlab.com/esr/microjson.git) was  used to read a .JSON file containing the database's data and convert it into C objects. 
 
 ### SQL-like syntax
-Queries made in this DBMS must follow the following syntax: 
-* select;columnName, columnName2 | * (to print all columns);tableName;[optional]columnName;operator,conditionValue
-* insert; tableName; columnName1, columName2 | * ; value1, value2
-* join;columnName,columnName2 | * ;tableName1,tableName2
+Queries made in this DBMS must follow the following syntax (no spaces): 
+* select;columnName,columnName2 | *;tableName;[optional where clause]columnName,operator,conditionValue
+* insert;tableName;columnName1,columName2 | *;value1,value2
+* join;columnName,columnName2 | *;tableName1,tableName2
+
+Note: * (to print all columns)
 
 It's important to know beforehand the exact names of the tables and their attributes since MiniDBMS is case-sensitive. 
 
