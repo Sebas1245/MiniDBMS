@@ -30,10 +30,13 @@ void displayTable(student_table *students) {
 }
 
 FILE *fStudents;
+FILE *fGrade;
 int main() {
   printf(" M I N I  D B M S\n");
-  fStudents = fopen("tables/students.json", "r");
 
+
+  fStudents = fopen("tables/students.json", "r");
+  fGrade = fopen("tables/grades.json", "r");
   // Object to store all students records
   student_table *students = malloc(sizeof(student_table));
   // Object to store all grades records
@@ -43,7 +46,12 @@ int main() {
   char line[1000];
 
   if (fStudents == NULL) {
-    printf("Could not open file");
+    printf("Could not open students file");
+    return 1;
+  }
+
+  if (fGrade == NULL){
+    printf("Could not open grades file");
     return 1;
   }
 
@@ -53,18 +61,35 @@ int main() {
   }
 
   // function that convers json objects into C objects
-  int status = json_student_read(json_line, students);
+  int statusS = json_student_read(json_line, students);
+
+  memset(line,0,1000);
+  memset(json_line,0,1000);
+  
+  // json read by json_student_read must be in one line
+  while (fgets(line, sizeof(line), fGrade)) {
+    strcat(json_line, line);
+  }
+
+  // function that convers json objects into C objects
+  int statusG = json_grade_read(json_line, grades);
 
   // TO ACCESS RECORDS OF STUDENTS -> students.students.records[i]
   // TO ACCESS RECORDS OF GRADES -> grades.grade_records[i]
 
-  if (status != 0) {
-    puts(json_error_string(status));
+  if (statusS != 0) {
+    puts(json_error_string(statusS));
     return 1;
+  }else if(statusG != 0 ){
+    puts(json_error_string(statusG));
   }
 
   displayTable(students);
+   fclose(fStudents);
 
-  fclose(fStudents);
+  int iWrite = commitToDBGrades(grades);
+
+
+ 
   return 0;
 }

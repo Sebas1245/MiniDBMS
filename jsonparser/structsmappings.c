@@ -61,3 +61,63 @@ int json_grade_read(const char *buf, grade_table *obj_list) {  //toma un arreglo
     memset(obj_list, '\0', sizeof(*obj_list));
     return json_read_object(buf, json_attrs_objects, NULL);
 }
+
+int commitToDBStudents(student_table *obj_list){
+    int i;
+    FILE *ptr  = fopen("tables/students.json", "w");
+    fputs("{\"students\": [\n", ptr );
+    for(int i=0;i<obj_list->cant - 1;i++){
+        fprintf(ptr, "\t{\"student_id\": %d, \"fname\": \"%s\", \"lname\": \"%s\", \"sex\": \"%c\", \"status\": \"%s\", \"scholarship\": %d, \"semester\": %d, \"cumgrade\": %f},\n",
+            obj_list->student_records[i].student_id, 
+            obj_list->student_records[i].fname, 
+            obj_list->student_records[i].lname, 
+            obj_list->student_records[i].sex, 
+            obj_list->student_records[i].status, 
+            obj_list->student_records[i].scholarship,
+            obj_list->student_records[i].semester,
+            obj_list->student_records[i].cumgrade   
+        ); 
+    }
+    fprintf(ptr, "\t{\"student_id\": %d, \"fname\": \"%s\", \"lname\": \"%s\", \"sex\": \"%c\", \"status\": \"%s\", \"scholarship\": %d, \"semester\": %d, \"cumgrade\": %f}\n",
+            obj_list->student_records[obj_list->cant-1].student_id, 
+            obj_list->student_records[obj_list->cant-1].fname, 
+            obj_list->student_records[obj_list->cant-1].lname, 
+            obj_list->student_records[obj_list->cant-1].sex, 
+            obj_list->student_records[obj_list->cant-1].status, 
+            obj_list->student_records[obj_list->cant-1].scholarship,
+            obj_list->student_records[obj_list->cant-1].semester,
+            obj_list->student_records[obj_list->cant-1].cumgrade   
+    ); 
+
+    
+    fputs("]}", ptr);
+    fclose(ptr);
+    return 0;
+}
+
+
+int commitToDBGrades(grade_table *obj_list){
+    int i;
+    FILE *ptr  = fopen("tables/grades.json", "w");
+    fputs("{\"grades\": [\n", ptr );
+    for(int i=0;i<obj_list->cant - 1;i++){
+        fprintf(ptr, "\t{\"enrollment_id\": %d, \"student_id\": %d, \"course\": \"%s\", \"school_term\": \"%s\", \"grade\": %f},\n",
+            obj_list->grade_records[i].enrollment_id, 
+            obj_list->grade_records[i].student_id, 
+            obj_list->grade_records[i].course, 
+            obj_list->grade_records[i].school_term, 
+            obj_list->grade_records[i].grade  
+        ); 
+    }
+    fprintf(ptr, "\t{\"enrollment_id\": %d, \"student_id\": %d, \"course\": \"%s\", \"school_term\": \"%s\", \"grade\": %f}\n",
+            obj_list->grade_records[obj_list->cant-1].enrollment_id, 
+            obj_list->grade_records[obj_list->cant-1].student_id, 
+            obj_list->grade_records[obj_list->cant-1].course, 
+            obj_list->grade_records[obj_list->cant-1].school_term, 
+            obj_list->grade_records[obj_list->cant-1].grade 
+    ); 
+    fputs("]}", ptr);
+    fclose(ptr);
+
+    return 0;
+}
