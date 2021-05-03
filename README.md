@@ -7,11 +7,11 @@ This project was designed to be compiled on Linux. Run make and this will automa
 
 
 ```
-./miniDBMS
+./server
 ```
 Alternatively, if you'll running Windows you can compile it by running; 
 ```
-gcc -O -o miniDBMS ./jsonparser/mjson/mjson.c ./jsonparser/structsmappings.c main.c 
+gcc -O -o server ./jsonparser/mjson/mjson.c ./jsonparser/structsmappings.c server.c 
 ```
 
 
