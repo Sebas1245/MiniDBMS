@@ -61,16 +61,44 @@ int parseQuery(const char *query, query_t *q)
   return json_read_object(buf, json_attrs_object, NULL);
 }
 
-// Parse Attribute String
-// Returns: Array of Attributes
-char * parseAttr(const char *attr)
+char *trimWhitespace(char *str)
 {
- 
+  char *end;
+
+  // Leading whitespace
+  while (isspace(*str))
+    str++;
+
+  if (*str == 0)
+    return str;
+
+  // Trailing space
+  end = str + strlen(str) - 1;
+  while (end > str && isspace(*end))
+    end--;
+
+  end[1] = '\0';
+  return str;
+}
+// Parse Attribute String
+// Returns: Array of Attribute
+// Example inpute : (student_id,fname0
+char *parseAttr(const char *attr)
+{
+  if (attr == "*") {
+    return ['student_id', "fname", "lname", "sex", "status", "sholarship", "semester", "cumgrade"]
+  }
+  char delim[] = ":";
+  char *ptr = strtok(line, delim);
+  while (ptr != NULL)
+  {
+  }
+  return
 }
 
 // Input: Student Table, Query Struct
 // Retuns: Array of Indexes
-int *scan_table_student(student_table *students, query_t query)
+int *scan_table_student(student_table *students, const char* attr,  const char* query)
 {
   static int r[1000];
   int counter = 0;
@@ -161,12 +189,11 @@ int *scan_table_student(student_table *students, query_t query)
 char *query_table_student(student_table *students_list, const char *attributes, const char *query)
 {
   char *result = malloc(2050);
-  int *p =  scan_table_student(students_list, query);
-  
-  char* attr =  parseAttr()
-  for (i = 0; i < sizeof(p); i++)
+  int *p = scan_table_student(students_list, query);
+  char *attr = parseAttr(attributes);
+  for (i = 0; i < sizeof(p)/sizeof(int);; i++)
   {
-    for (j = 0; j < sizeof(attr); j++)
+    for (j = 0; j < sizeof(attr)/sizeof(char);; j++)
     {
       if attr
         [i] == "student_id"
@@ -209,36 +236,19 @@ char *query_table_student(student_table *students_list, const char *attributes, 
           strcat(result, students_list->student_records[p[i]]->cumgrade);
         }
     }
+    strcat(result,"\0");
   }
 
   return result;
 }
 
-int read_student_json(const char *buf, student_table *students_list)
-{
-  const struct json_attr_t json_attrs_object[] = {
-      {"student_id", t_integer, STRUCTOBJECT(student_t, student_id)},
-      {"fname", t_string, STRUCTOBJECT(student_t, fname),
-       .len = sizeof(student_records.fname)},
-      {"lname", t_string, STRUCTOBJECT(student_t, lname),
-       .len = sizeof(student_records.lname)},
-      {"sex", t_character, STRUCTOBJECT(student_t, sex)},
-      {"status", t_string, STRUCTOBJECT(student_t, status),
-       .len = sizeof(student_records.status)},
-      {"scholarship", t_boolean, STRUCTOBJECT(student_t, scholarship)},
-      {"semester", t_integer, STRUCTOBJECT(student_t, semester)},
-      {"cumgrade", t_real, STRUCTOBJECT(student_t, cumgrade)},
-      {NULL},
-  };
-  memset(students_list, '\0', sizeof(*students_list));
-  return json_read_object(buf, json_attrs_object, NULL);
-}
 
 // Completed
-int insert_to_table_student(const char *buf, student_table *students_list)
+int insert_to_table_student(const char *values, const char *attributes, student_table *students_list)
 {
-  int status = json_student_read(json_line, students);
-  if (status == 0)
+  char *attr = parseAttr(attributes)
+  char *val = parseAttr(values) int i, j;
+  for  (status == 0)
   {
     for (i = index; i < students.cant - 1; i++)
     {
@@ -251,17 +261,57 @@ int insert_to_table_student(const char *buf, student_table *students_list)
 
 // Status: Todo
 // Implement Query for Multiple Rows
-int update_table_student(const char *buf, const char *attributes, const char *query, student_table *students_list)
+int update_table_student(const char *values, const char *attributes, const char *query, student_table *students_list)
 {
-  int status = json_student_read(json_line, students);
-  int index = scan_table(students, query);
-  if (status == 0)
+  int *index = scan_table(students_list, query);
+  char *attr = parseAttr(attributes)
+  char *val = parseAttr(values) int i, j;
+  for (j = 0; j < sizeof(index)/sizeof(int);; j++)
   {
-    student_table *students = malloc(sizeof(student_table));
-    students_list->student_records[i] = student->stident_records[0];
-    return 0
+    for (i = 0; i < sizeof(attr)sizeof(char); i++)
+    {
+      if attr
+        [i] == "student_id"
+        {
+          students_list->student_records[p[j]]->student_id = val[i]
+        }
+      if attr
+        [i] == "fname"
+        {
+          students_list->student_records[p[j]]->fname = val[i];
+        }
+      if attr
+        [i] == "lname"
+        {
+          students_list->student_records[p[j]]->lname = val[i];
+        }
+      if attr
+        [i] == "sex"
+        {
+          students_list->student_records[p[j]]->sex = val[i];
+        }
+      if attr
+        [i] == "status"
+        {
+          students_list->student_records[p[j]]->status = val[i];
+        }
+      if attr
+        [i] == "scholarship"
+        {
+          students_list->student_records[p[j]]->scholarship = val[i];
+        }
+      if attr
+        [i] == "semester"
+        {
+          students_list->student_records[p[i]]->semester = val[i];
+        }
+      if attr
+        [i] == "cumgrade"
+        {
+          students_list->student_records[p[j]]->cumgrade = val[i];
+        }
+    }
   }
-  return 1
 }
 
 // Implement Query for Multiple Rows

@@ -1,4 +1,4 @@
-{"students": [
+{ "students": [
     {"student_id": 123, "fname": "Blanca", "lname": "Sanchez", "sex": "F", "status": "Local", "scholarship": 0, "semester": 6, "cumgrade": 90.6},
     {"student_id": 654, "fname": "Francisco", "lname": "Rivera", "sex": "M", "status": "Local", "scholarship": 1, "semester": 6, "cumgrade": 98.2},
     {"student_id": 567, "fname": "Ricardo", "lname": "Hernandez", "sex": "M", "status": "Exchange", "scholarship": 0, "semester": 7, "cumgrade": 94.7},
