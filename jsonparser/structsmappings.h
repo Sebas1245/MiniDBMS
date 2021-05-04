@@ -49,6 +49,14 @@ struct grade_table{
 typedef struct grade_table grade_table;
 
 
+//Struct to hold one record of grades
+struct query_t{
+    char key[30];
+    char val[30];
+};
+typedef struct query_t query_t;
+
+
 //Parser functions
 int json_student_read(const char *buf, student_table *obj_list);
 int json_grade_read(const char *buf, grade_table *obj_list);

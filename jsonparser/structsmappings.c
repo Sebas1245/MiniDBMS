@@ -3,7 +3,7 @@
 #include "structsmappings.h"
 
 
-int json_student_read(const char *buf,student_table *obj_list) {  //toma un arreglo de objetos en json
+int json_student_read(const char *buf, student_table *obj_list) {  //toma un arreglo de objetos en json
 
     /* Mapping of JSON attributes to my_object's struct members */
     const struct json_attr_t json_attrs_subobject[] = {
