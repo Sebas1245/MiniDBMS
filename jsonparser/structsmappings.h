@@ -61,4 +61,6 @@ typedef struct query_t query_t;
 int json_student_read(const char *buf, student_table *obj_list);
 int json_grade_read(const char *buf, grade_table *obj_list);
 
+int commitToDBStudents(student_table *obj_list);
+int commitToDBGrades(grade_table *obj_list);
 #endif

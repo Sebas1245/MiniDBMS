@@ -9,6 +9,8 @@
 #include <sys/types.h>
 #include <syslog.h>
 #include <unistd.h> //write
+#include <stddef.h>
+#include "jsonparser/structsmappings.h"
 
 char cwd[FILENAME_MAX];
 
@@ -152,9 +154,78 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
+
+                    // LOAD DATABASE INFORMATION INTO AN ARRAY OF OBJECTS
+                    FILE *fStudents;
+                    FILE *fGrade;
+
+                    fStudents = fopen("tables/students.json", "r");
+                    fGrade = fopen("tables/grades.json", "r");
+                    // Object to store all students records
+                    student_table *students = malloc(sizeof(student_table));
+                    // Object to store all grades records
+                    grade_table *grades = malloc(sizeof(grade_table));
+
+                    char json_line[1000] = "";
+                    char line[1000];
+
+                    if (fStudents == NULL) {
+                        printf("Could not open students file");
+                        return 1;
+                    }
+
+                    if (fGrade == NULL){
+                        printf("Could not open grades file");
+                        return 1;
+                    }
+
+                    // json read by json_student_read must be in one line
+                    while (fgets(line, sizeof(line), fStudents)) {
+                        strcat(json_line, line);
+                    }
+
+                    // function that convers json objects into C objects
+                    int statusS = json_student_read(json_line, students);
+
+                    memset(line,0,1000);
+                    memset(json_line,0,1000);
+                    
+                    // json read by json_student_read must be in one line
+                    while (fgets(line, sizeof(line), fGrade)) {
+                        strcat(json_line, line);
+                    }
+
+                    // function that convers json objects into C objects
+                    int statusG = json_grade_read(json_line, grades);
+
+                    // TO ACCESS RECORDS OF STUDENTS -> students.students.records[i]
+                    // TO ACCESS RECORDS OF GRADES -> grades.grade_records[i]
+
+                    if (statusS != 0) {
+                        puts(json_error_string(statusS));
+                        return 1;
+                    }else if(statusG != 0 ){
+                        puts(json_error_string(statusG));
+                    }
+
+                    fclose(fGrade);
+                    fclose(fStudents);
+
                     // TODO: return query results
+
                     snprintf(serverReply, sizeof(serverReply), "%s", clientMsg);
                     send(new_socket, serverReply, sizeof(serverReply), 0);
+
+
+
+                    //Commiting Changes to the DB
+                    int commitStudents = commitToDBStudents(students);
+                    if (commitStudents != 0 ) printf("error commiting changes to the database");
+
+                    int commitGrades = commitToDBGrades(grades);
+                    if(commitGrades != 0) printf("error commiting changes to the database");
+                    
+
                 }
             }
         }
