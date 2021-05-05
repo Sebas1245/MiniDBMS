@@ -1,6 +1,6 @@
 CFLAGS = -O
 CC = gcc
-SRC =  ./jsonparser/mjson/mjson.c ./jsonparser/structsmappings.c  main.c
+SRC =  ./jsonparser/mjson/mjson.c ./jsonparser/structsmappings.c ./queryLanguage/query_main.c  main.c
 OBJ = $(SRC:.c = .o)
 
 miniDBMS: $(OBJ)
