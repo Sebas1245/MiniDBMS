@@ -100,8 +100,6 @@ char **parseAttr(char *attr_raw)
     return attr;
 }
 
-
-
 // Input: Student Table, Query Struct
 // Retuns: Array of Indexes
 int *scan_table_student(char *query_raw, student_table *students)
@@ -116,10 +114,29 @@ int *scan_table_student(char *query_raw, student_table *students)
 
         if (strcmp(query[0], "student_id") == 0)
         {
-            if (students->student_records[i].student_id == atoi(query[2]))
+            if (strcmp(query[1], "<") == 0)
             {
-                r[counter] = i;
-                counter++;
+                if (students->student_records[i].student_id < atoi(query[2]))
+                {
+                    r[counter] = i;
+                    counter++;
+                }
+            }
+            if (strcmp(query[1], "=") == 0)
+            {
+                if (students->student_records[i].student_id == atoi(query[2]))
+                {
+                    r[counter] = i;
+                    counter++;
+                }
+            }
+            if (strcmp(query[1], ">") == 0)
+            {
+                if (students->student_records[i].student_id > atoi(query[2]))
+                {
+                    r[counter] = i;
+                    counter++;
+                }
             }
         }
         if (strcmp(query[0], "fname") == 0)
@@ -164,20 +181,59 @@ int *scan_table_student(char *query_raw, student_table *students)
         }
         if (strcmp(query[0], "semester") == 0)
         {
-            if (students->student_records[i].semester == atoi(query[2]))
+            if (strcmp(query[1], "<") == 0)
             {
-                r[counter] = i;
-                counter++;
+                if (students->student_records[i].semester < atoi(query[2]))
+                {
+                    r[counter] = i;
+                    counter++;
+                }
+            }
+            if (strcmp(query[1], "=") == 0)
+            {
+                if (students->student_records[i].semester == atoi(query[2]))
+                {
+                    r[counter] = i;
+                    counter++;
+                }
+            }
+            if (strcmp(query[1], ">") == 0)
+            {
+                if (students->student_records[i].semester > atoi(query[2]))
+                {
+                    r[counter] = i;
+                    counter++;
+                }
             }
         }
         if (strcmp(query[0], "cumgrade") == 0)
         {
             double cumgrade;
             sscanf(query[2], "%lf", &cumgrade);
-            if (students->student_records[i].cumgrade == cumgrade)
+
+            if (strcmp(query[1], "<") == 0)
             {
-                r[counter] = i;
-                counter++;
+                if (students->student_records[i].cumgrade < atoi(query[2]))
+                {
+                    r[counter] = i;
+                    counter++;
+                }
+            }
+            if (strcmp(query[1], "=") == 0)
+            {
+                if (students->student_records[i].cumgrade == atoi(query[2]))
+                {
+                    r[counter] = i;
+                    counter++;
+                }
+            }
+            if (strcmp(query[1], ">") == 0)
+            {
+                if (students->student_records[i].cumgrade > atoi(query[2]))
+                {
+                    r[counter] = i;
+                    counter++;
+                }
             }
         }
     }
@@ -285,15 +341,21 @@ int insert_to_table_student(char *val_raw, char *attr_raw, student_table *studen
     int i;
     int size = students_list->cant;
     // TODO: Handle Mismatch of size between val and attr
+    if (!(sizeof(val) / sizeof(char) == sizeof(attr) / sizeof(char)) {
+        return 1;
+    }
     // TODO: Handle Student Table Capacity
+    if (size == 1000) {
+        return 1;
+    }
     for (i = 0; i < sizeof(attr) / sizeof(char); i++)
     {
-         printf("'%s'\n", attr[i]);
-         printf("'%s'\n", val[i]);
+        printf("'%s'\n", attr[i]);
+        printf("'%s'\n", val[i]);
         if (strcmp(attr[i], "student_id") == 0)
         {
             students_list->student_records[size].student_id = atoi(val[i]);
-            printf("%s",atoi(val[i]));
+            printf("%s", atoi(val[i]));
         }
         // if (strcmp(attr[i], "fname") == 0)
         // {

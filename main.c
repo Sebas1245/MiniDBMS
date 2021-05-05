@@ -126,7 +126,31 @@ int main()
   printf("%s", result5);
 */
 
-  insert_to_table_student("900,Chris,Alvar,M,Local,0,6,98.3","*",students);
+// ---- Query Grade Table Test --- //
+
+/*
+// Test * Should return fname,lname parameters of student with id 892
+  char* result = query_table_student("sex,status,fname,lname","student_id,==,892",students);
+  printf("%s", result);
+
+// --- Especial case int double values in table
+  // Test * Should return sex attr parameters of student with id 892
+  char* result2 = query_table_student("scholarship","student_id,==,892",students);
+  printf("%s", result2);
+
+  // Test * Should return student_id attr parameters of student with id 892
+  char* result3 = query_table_student("student_id","student_id,==,892",students);
+  printf("%s", result3);
+
+  //  Test * Should return cumgrade attr parameters of student with id 892
+  char* result4 = query_table_student("cumgrade","student_id,==,892",students);
+  printf("%s", result4);
+
+  //  Test * Should return cumgrade attr parameters of student with id 892
+  char* result5 = query_table_student("*","student_id,==,892",students);
+  printf("%s", result5);
+*/
+// insert_to_table_student("900,Chris,Alvar,M,Local,0,6,98.3","*",students);
 
 // #endif
 
