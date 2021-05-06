@@ -1,8 +1,8 @@
-{ "students": [
-    {"student_id": 123, "fname": "Blanca", "lname": "Sanchez", "sex": "F", "status": "Local", "scholarship": 0, "semester": 6, "cumgrade": 90.6},
-    {"student_id": 654, "fname": "Francisco", "lname": "Rivera", "sex": "M", "status": "Local", "scholarship": 1, "semester": 6, "cumgrade": 98.2},
-    {"student_id": 567, "fname": "Ricardo", "lname": "Hernandez", "sex": "M", "status": "Exchange", "scholarship": 0, "semester": 7, "cumgrade": 94.7},
-    {"student_id": 435, "fname": "Maria", "lname": "Posada", "sex": "F", "status": "Foreign", "scholarship": 1, "semester": 8, "cumgrade": 87.3},
-    {"student_id": 656, "fname": "Leticia", "lname": "Cardona", "sex": "F", "status": "Local", "scholarship": 1, "semester": 4, "cumgrade": 100},
-    {"student_id": 892, "fname": "Miguel", "lname": "Gomez", "sex": "F", "status": "Exchange", "scholarship": 0, "semester": 6, "cumgrade": 89.9}
+{"students": [
+	{"student_id": 123, "fname": "Blanca", "lname": "Sanchez", "sex": "F", "status": "Local", "scholarship": 0, "semester": 6, "cumgrade": 90.600000},
+	{"student_id": 654, "fname": "Francisco", "lname": "Rivera", "sex": "M", "status": "Local", "scholarship": 1, "semester": 6, "cumgrade": 98.200000},
+	{"student_id": 567, "fname": "Ricardo", "lname": "Hernandez", "sex": "M", "status": "Exchang", "scholarship": 0, "semester": 7, "cumgrade": 94.700000},
+	{"student_id": 435, "fname": "Maria", "lname": "Posada", "sex": "F", "status": "Foreign", "scholarship": 1, "semester": 8, "cumgrade": 87.300000},
+	{"student_id": 656, "fname": "Leticia", "lname": "Cardona", "sex": "F", "status": "Local", "scholarship": 1, "semester": 4, "cumgrade": 100.000000},
+	{"student_id": 892, "fname": "Miguel", "lname": "Gomez", "sex": "F", "status": "Exchang", "scholarship": 0, "semester": 6, "cumgrade": 89.900000}
 ]}
