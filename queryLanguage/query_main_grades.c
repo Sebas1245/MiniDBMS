@@ -103,6 +103,13 @@ int *scan_table_grade(char *query_raw, grade_table *grades)
 {
     static int r[1000];
     int counter = 0;
+    if (strcmp(query_raw, "") ==0) {
+        int l;
+        for (l =0 ; l < grades->cant; l++) {
+            r[l]= l;
+        } 
+        return r;
+    }
     char **query = parseQuery(query_raw);
     int i, j;
 

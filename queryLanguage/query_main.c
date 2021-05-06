@@ -106,6 +106,13 @@ int *scan_table_student(char *query_raw, student_table *students)
 {
     static int r[1000];
     int counter = 0;
+    if (strcmp(query_raw, "") ==0) {
+        int l;
+        for (l =0 ; l < students->cant; l++) {
+            r[l]= l;
+        } 
+        return r;
+    }
     char **query = parseQuery(query_raw);
     int i, j;
 
