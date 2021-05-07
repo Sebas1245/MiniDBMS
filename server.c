@@ -170,7 +170,7 @@ int main(int argc, char *argv[]) {
           // Object to store all grades records
           grade_table *grades = malloc(sizeof(grade_table));
 
-          char json_line[1000];
+          char json_line[1000] = "";
           char line[1000];
 
           if (fStudents == NULL) {
