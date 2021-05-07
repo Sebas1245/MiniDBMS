@@ -214,6 +214,9 @@ int main(int argc, char *argv[]) {
             return 1;
           }
 
+          memset(line, 0, 1000);
+          memset(json_line, 0, 1000);
+
           fclose(fGrade);
           fclose(fStudents);
 
