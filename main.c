@@ -89,8 +89,8 @@ int main() {
   // printf("%s\n", query[2]);
 
   // ---- Scan Table Test --- //
-  int* i = scan_table_student("student_id,=,892", students);
-  printf("%d\n", i[0]);
+  // int* i = scan_table_student("student_id,=,892", students);
+  // printf("%d\n", i[0]);
 
   // ---- Query Table Test --- //
   printf("Query Table Test\n");
@@ -115,7 +115,7 @@ int main() {
   printf("%s", result4);
 
   //  Test * Should return cumgrade attr parameters of student with id 892
-  char* result5 = query_table_student("*", "student_id,=,656", students);
+  char* result5 = query_table_student("*", "student_id,<,892", students);
   printf("%s", result5);
   // select;*;students;student_id,=,656
   // select;sex,status,fname,lname;students;student_id,=,435

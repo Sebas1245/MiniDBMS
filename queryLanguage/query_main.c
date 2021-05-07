@@ -6,7 +6,7 @@
 
 #include "../jsonparser/structsmappings.h"
 
-#define ARRAY_LEN(x) (sizeof(x) / sizeof(x[0]))
+#define ARRAY_LEN(x) (sizeof(x) / sizeof((x)[0]))
 #define ATTR_MAX_STUDENTS 7
 // Parse Query String
 // Returns: Query Struct
@@ -93,8 +93,7 @@ char **parseAttr(char *attr_raw) {
 
 // Input: Student Table, Query Struct
 // Retuns: Array of Indexes
-int *scan_table_student(char *query_raw, student_table *students) {
-  static int r[1000];
+int scan_table_student(char *query_raw, student_table *students, int *r) {
   int counter = 0;
   char **query = parseQuery(query_raw);
   int i, j;
@@ -195,7 +194,7 @@ int *scan_table_student(char *query_raw, student_table *students) {
     }
   }
 
-  return r;
+  return counter;
 }
 
 /*
@@ -209,11 +208,12 @@ Outputs:
 
 char *query_table_student(char *attributes, char *query,
                           student_table *students_list) {
+  int p[1000];
   char *result = malloc(10000);
-  int *p = scan_table_student(query, students_list);
+  int len = scan_table_student(query, students_list, p);
   char **attr = parseAttr(attributes);
   int i, j;
-  int len = ARRAY_LEN(p) - 1;
+
   for (i = 0; i < len; i++) {
     for (j = 0; j < sizeof(attr) / sizeof(char); j++) {
       if (strcmp(attr[j], "student_id") == 0) {

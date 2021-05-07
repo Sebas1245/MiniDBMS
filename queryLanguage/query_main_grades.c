@@ -69,7 +69,7 @@ char **parseAttrGrades(char *attr_raw) {
 
   if (strcmp(attr_raw, "*") == 0) {
     strcpy(attr[0], "enrollment_id");
-    strcpy(attr[1], "grade_id");
+    strcpy(attr[1], "student_id");
     strcpy(attr[2], "course");
     strcpy(attr[3], "school_term");
     strcpy(attr[4], "grade");
@@ -90,28 +90,27 @@ char **parseAttrGrades(char *attr_raw) {
 
 // Input: grade Table, Query Struct
 // Retuns: Array of Indexes
-int *scan_table_grade(char *query_raw, grade_table *grades) {
-  static int r[1000];
+int scan_table_grade(char *query_raw, grade_table *grades, int *r) {
   int counter = 0;
   char **query = parseQueryGrades(query_raw);
   int i, j;
 
   for (i = 0; i < grades->cant; i++) {
-    if (strcmp(query[0], "grade_id") == 0) {
+    if (strcmp(query[0], "student_id") == 0) {
       if (strcmp(query[1], "<") == 0) {
-        if (grades->grade_records[i].grade_id < atoi(query[2])) {
+        if (grades->grade_records[i].student_id < atoi(query[2])) {
           r[counter] = i;
           counter++;
         }
       }
       if (strcmp(query[1], "=") == 0) {
-        if (grades->grade_records[i].grade_id == atoi(query[2])) {
+        if (grades->grade_records[i].student_id == atoi(query[2])) {
           r[counter] = i;
           counter++;
         }
       }
       if (strcmp(query[1], ">") == 0) {
-        if (grades->grade_records[i].grade_id > atoi(query[2])) {
+        if (grades->grade_records[i].student_id > atoi(query[2])) {
           r[counter] = i;
           counter++;
         }
@@ -174,7 +173,7 @@ int *scan_table_grade(char *query_raw, grade_table *grades) {
     }
   }
 
-  return r;
+  return counter;
 }
 
 /*
@@ -185,22 +184,24 @@ fname,lname query: cumgrade,<,70 Outputs: string of grade with attributes;
 
 char *query_table_grade(char *attributes, char *query,
                         grade_table *grades_list) {
+  int p[1000];
   char *result = malloc(10000);
-  int *p = scan_table_grade(query, grades_list);
+  int len = scan_table_grade(query, grades_list, p);
   char **attr = parseAttrGrades(attributes);
   int i, j;
-  int len = ARRAY_LEN(p) - 1;
+
   for (i = 0; i < len; i++) {
     for (j = 0; j < sizeof(attr) / sizeof(char); j++) {
-      if (strcmp(attr[j], "grade_id") == 0) {
-        char grade_id[50];
-        sprintf(grade_id, "%d", grades_list->grade_records[p[i]].grade_id);
-        strcat(result, grade_id);
+      if (strcmp(attr[j], "student_id") == 0) {
+        char student_id[50];
+        sprintf(student_id, "%d", grades_list->grade_records[p[i]].student_id);
+        strcat(result, student_id);
         strcat(result, "\t");
       }
       if (strcmp(attr[j], "enrollment_id") == 0) {
         char enrollment_id[50];
-        sprintf(grade_id, "%d", grades_list->grade_records[p[i]].enrollment_id);
+        sprintf(enrollment_id, "%d",
+                grades_list->grade_records[p[i]].enrollment_id);
         strcat(result, enrollment_id);
         strcat(result, "\t");
       }
@@ -209,7 +210,7 @@ char *query_table_grade(char *attributes, char *query,
         strcat(result, "\t");
       }
       if (strcmp(attr[j], "school_term") == 0) {
-        strcat(result, grades_list->grade_records[p[i]].status);
+        strcat(result, grades_list->grade_records[p[i]].school_term);
         strcat(result, "\t");
       }
       if (strcmp(attr[j], "grade") == 0) {
@@ -255,8 +256,8 @@ int insert_to_table_grade(char *val_raw, char *attr_raw,
   for (i = 0; i < sizeof(attr) / sizeof(char); i++) {
     printf("'%s'\n", attr[i]);
     printf("'%s'\n", val[i]);
-    if (strcmp(attr[i], "grade_id") == 0) {
-      grades_list->grade_records[size].grade_id = atoi(val[i]);
+    if (strcmp(attr[i], "student_id") == 0) {
+      grades_list->grade_records[size].student_id = atoi(val[i]);
       printf("%s", atoi(val[i]));
     }
     // if (strcmp(attr[i], "fname") == 0)

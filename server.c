@@ -13,7 +13,7 @@
 
 #include "jsonparser/structsmappings.h"
 #include "queryLanguage/query_main.h"
-#include "queryLanguage/query_main_grades.h"
+// #include "queryLanguage/query_main_grades.h"
 
 char cwd[FILENAME_MAX];
 
@@ -170,10 +170,8 @@ int main(int argc, char *argv[]) {
           // Object to store all grades records
           grade_table *grades = malloc(sizeof(grade_table));
 
-          char json_line_st[1000] = "";
-          char line_st[1000];
-          char json_line_g[1000] = "";
-          char line_g[1000];
+          char json_line[1000];
+          char line[1000];
 
           if (fStudents == NULL) {
             printf("Could not open students file");
@@ -186,20 +184,23 @@ int main(int argc, char *argv[]) {
           }
 
           // json read by json_student_read must be in one line_st
-          while (fgets(line_st, sizeof(line_st), fStudents)) {
-            strcat(json_line_st, line_st);
+          while (fgets(line, sizeof(line), fStudents)) {
+            strcat(json_line, line);
           }
 
           // function that convers json objects into C objects
-          int statusS = json_student_read(json_line_st, students);
+          int statusS = json_student_read(json_line, students);
+
+          memset(line, 0, 1000);
+          memset(json_line, 0, 1000);
 
           // json read by json_student_read must be in one line
-          //   while (fgets(line_g, sizeof(line_g), fGrade)) {
-          //     strcat(json_line_g, line_g);
-          //   }
+          while (fgets(line, sizeof(line), fGrade)) {
+            strcat(json_line, line);
+          }
 
           // function that convers json objects into C objects
-          //   int statusG = json_grade_read(json_line_g, grades);
+          int statusG = json_grade_read(json_line, grades);
 
           // TO ACCESS RECORDS OF STUDENTS -> students.students.records[i]
           // TO ACCESS RECORDS OF GRADES -> grades.grade_records[i]
@@ -208,12 +209,12 @@ int main(int argc, char *argv[]) {
             puts(json_error_string(statusS));
             return 1;
           }
-          //   if (statusG != 0) {
-          //     puts(json_error_string(statusG));
-          //     return 1;
-          //   }
+          if (statusG != 0) {
+            puts(json_error_string(statusG));
+            return 1;
+          }
 
-          //   fclose(fGrade);
+          fclose(fGrade);
           fclose(fStudents);
 
           // TODO: return query results
@@ -223,6 +224,8 @@ int main(int argc, char *argv[]) {
               char *result = query_table_student(query[1], query[3], students);
               snprintf(serverReply, sizeof(serverReply), "%s", result);
             } else if (strcmp(query[2], "grades") == 0) {
+              // char *result = query_table_grade(query[1], query[3], grades);
+              // snprintf(serverReply, sizeof(serverReply), "%s", result);
             } else {
               snprintf(serverReply, sizeof(serverReply), "Wrong select: %s",
                        clientMsg);
@@ -250,12 +253,16 @@ int main(int argc, char *argv[]) {
 
           // Commiting Changes to the DB
           int commitStudents = commitToDBStudents(students);
-          if (commitStudents != 0)
+          if (commitStudents != 0) {
             printf("error commiting changes to the database");
+            return 1;
+          }
 
           int commitGrades = commitToDBGrades(grades);
-          if (commitGrades != 0)
+          if (commitGrades != 0) {
             printf("error commiting changes to the database");
+            return 1;
+          }
         }
       }
     }

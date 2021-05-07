@@ -6,7 +6,7 @@
 char **parseQueryGrades(char *query_raw);
 char **parseAttrGrades(char *attr_raw);
 char *trimWhitespaceGrades(char *str);
-int *scan_table_grade(char *query, grade_table *grades);
+int scan_table_grade(char *query, grade_table *grades, int *r);
 char *query_table_grade(char *attributes, char *query,
                         grade_table *grades_list);
 int insert_to_table_grade(char *val_raw, char *attr_raw,
