@@ -1,5 +1,4 @@
 #include "query_main.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -55,7 +54,7 @@ char *trimWhitespace(char *str) {
 Inputs: fname,lname | *
 */
 char **parseAttr(char *attr_raw) {
-  char **attr = (char **)malloc(sizeof(char *) * 100);
+  char **attr = (char **)malloc(sizeof(char *) * 8);
 
   int j;
   for (j = 0; j < 8; j++) {
@@ -95,9 +94,6 @@ char **parseAttr(char *attr_raw) {
 // Retuns: Array of Indexes
 int scan_table_student(char *query_raw, student_table *students, int *r) {
   int counter = 0;
-  char **query = parseQuery(query_raw);
-  int i, j;
-  
 
   if (strcmp(query_raw, "") == 0) {
     for (i = 0; i < students->cant; i++) {
@@ -105,6 +101,10 @@ int scan_table_student(char *query_raw, student_table *students, int *r) {
     }
     return students->cant;
   }
+
+
+  char **query = parseQuery(query_raw);
+  int i, j;
 
   for (i = 0; i < students->cant; i++) {
     if (strcmp(query[0], "student_id") == 0) {
@@ -218,7 +218,7 @@ char *query_table_student(char *attributes, char *query,
                           student_table *students_list) {
   int p[1000];
   char *result = malloc(10000);
-  int len =  scan_table_student(query, students_list, p);
+  int len = scan_table_student(query, students_list, p);
   char **attr = parseAttr(attributes);
   int i, j;
 
@@ -340,10 +340,14 @@ int insert_to_table_student(char *val_raw, char *attr_raw,
     }
     if (strcmp(attr[i], "cumgrade") == 0)
     {
-        double cumgrade = atof()
+        double cumgrade = atof(val[i]);
+        //sscanf(val[1], "%lf", &cumgrade);
+        
         students_list->student_records[size].cumgrade = cumgrade;
     }
   }
   students_list->cant++;
+
+
   return 0;
 }

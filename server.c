@@ -235,6 +235,7 @@ int main(int argc, char *argv[]) {
             }
           } else if (strcmp(query[0], "insert") == 0) {
             if (strcmp(query[1], "students") == 0) {
+              insert_to_table_student(query[3], query[2], students);
             } else if (strcmp(query[1], "grades") == 0) {
             } else {
               snprintf(serverReply, sizeof(serverReply), "Wrong insert: %s",
