@@ -20,6 +20,7 @@ char **parseQueryGrades(char *query_raw) {
   int j;
   for (j = 0; j < 8; j++) {
     query[j] = (char *)malloc(50 * sizeof(char));
+    memset(query[j], '\0', sizeof(query[j]));
   }
 
   char line[200];
@@ -61,6 +62,7 @@ char **parseAttrGrades(char *attr_raw) {
   int j;
   for (j = 0; j < 5; j++) {
     attr[j] = (char *)malloc(50 * sizeof(char));
+    memset(attr[j], '\0', sizeof(attr[j]));
   }
 
 #ifdef DEBUG
@@ -94,9 +96,16 @@ char **parseAttrGrades(char *attr_raw) {
 // Retuns: Array of Indexes
 int scan_table_grade(char *query_raw, grade_table *grades, int *r) {
   int counter = 0;
-  char **query = parseQueryGrades(query_raw);
   int i, j;
 
+  if (strcmp(query_raw, "none") == 0) {
+    for (i = 0; i < grades->cant; i++) {
+      r[i] = i;
+    }
+    return grades->cant;
+  }
+
+  char **query = parseQueryGrades(query_raw);
   for (i = 0; i < grades->cant; i++) {
     if (strcmp(query[0], "student_id") == 0) {
       if (strcmp(query[1], "<") == 0) {

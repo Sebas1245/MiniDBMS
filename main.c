@@ -125,7 +125,8 @@ int main() {
   // select;*;students;student_id,<,656
   // select;*;students;student_id,<,1000
   // select;*;grades;student_id,<,1000
-  //
+  // insert;students;*;115,Abc,Defg,M,Local,1,5,95.3
+  // insert;grades;*;001,115,Math,Spring 2021,90
   //
   // gcc -O -o server ./jsonparser/mjson/mjson.c ./jsonparser/structsmappings.c
   // ./queryLanguage/query_main.c main.c

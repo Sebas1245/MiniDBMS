@@ -22,6 +22,7 @@ char **parseLine(char *line_raw) {
   int j;
   for (j = 0; j < 8; j++) {
     query[j] = (char *)malloc(50 * sizeof(char));
+    memset(query[j], '\0', sizeof(query[j]));
   }
 
   char line[200];
@@ -173,8 +174,10 @@ int main(int argc, char *argv[]) {
 
           size_t nJsonLine = 10000;
           char *json_line = malloc(nJsonLine);
+          memset(json_line, '\0', nJsonLine);
           size_t nLine = 1000;
           char *line = malloc(nLine);
+          memset(line, '\0', nLine);
 
           if (fStudents == NULL) {
             printf("Could not open students file");
@@ -228,6 +231,7 @@ int main(int argc, char *argv[]) {
           // TODO: return query results
           char **query = parseLine(clientMsg);
           char *result = malloc(10024);
+          memset(result, '\0', sizeof(result));
           if (strcmp(query[0], "select") == 0) {
             if (strcmp(query[2], "students") == 0) {
               query_table_student(query[1], query[3], students, result);

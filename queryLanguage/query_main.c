@@ -20,6 +20,7 @@ char **parseQuery(char *query_raw) {
   int j;
   for (j = 0; j < 8; j++) {
     query[j] = (char *)malloc(50 * sizeof(char));
+    memset(query[j], '\0', sizeof(query[j]));
   }
 
   char line[200];
@@ -61,6 +62,7 @@ char **parseAttr(char *attr_raw) {
   int j;
   for (j = 0; j < 8; j++) {
     attr[j] = (char *)malloc(50 * sizeof(char));
+    memset(attr[j], '\0', sizeof(attr[j]));
   }
 
 #ifdef DEBUG
@@ -99,12 +101,12 @@ int scan_table_student(char *query_raw, student_table *students, int *r) {
   int counter = 0;
   int i, j;
 
-  // if (strcmp(query_raw, "") == 0) {
-  //   for (i = 0; i < students->cant; i++) {
-  //     r[i] = i;
-  //   }
-  //   return students->cant;
-  // }
+  if (strcmp(query_raw, "none") == 0) {
+    for (i = 0; i < students->cant; i++) {
+      r[i] = i;
+    }
+    return students->cant;
+  }
 
   char **query = parseQuery(query_raw);
   for (i = 0; i < students->cant; i++) {
@@ -358,3 +360,9 @@ int insert_to_table_student(char *val_raw, char *attr_raw,
 
   return 0;
 }
+
+// void join_student_with_grades(char *attr_raw, student_table *students_list,
+//                               grade_table *grades_list) {
+//   char **attr = parseAttr(attr_raw);
+//   int x;
+// }
