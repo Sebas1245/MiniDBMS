@@ -103,6 +103,7 @@ int scan_table_student(char *query_raw, student_table *students, int *r) {
   }
 
 
+
   char **query = parseQuery(query_raw);
   int i, j;
 
