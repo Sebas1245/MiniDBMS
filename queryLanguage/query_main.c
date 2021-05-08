@@ -55,7 +55,7 @@ char *trimWhitespace(char *str) {
 Inputs: fname,lname | *
 */
 char **parseAttr(char *attr_raw) {
-  char **attr = (char **)malloc(sizeof(char *) * 8);
+  char **attr = (char **)malloc(sizeof(char *) * 100);
 
   int j;
   for (j = 0; j < 8; j++) {
