@@ -19,7 +19,7 @@ gcc -O -o server ./jsonparser/mjson/mjson.c ./jsonparser/structsmappings.c serve
 In this project [microjson](https://gitlab.com/esr/microjson.git) was  used to read a .JSON file containing the database's data and convert it into C objects. 
 
 ### SQL-like syntax
-Queries made in this DBMS must follow the following syntax (no spaces): 
+Queries made in this DBMS must follow the following syntax: 
 * select;columnName,columnName2 | *;tableName;[optional where clause]columnName,operator,conditionValue
 * insert;tableName;columnName1,columName2 | *;value1,value2
 * join;columnName,columnName2 | *;tableName1,tableName2
@@ -30,8 +30,8 @@ It's important to know beforehand the exact names of the tables and their attrib
 
 #### Some Examples
 
-* select;fname,lname;students;cumgrade<70  //shows first and last name of the students with a cumulative grade lower than 70.
+* select;fname,lname;students;cumgrade,<,70  //shows first and last name of the students with a cumulative grade lower than 70.
 * insert;grades;*;245,543,Physics II,Spring 2020,98.3 //inserts new records in the table grades and provides values for all columns
-* join; fname, lname;students,grades // shows first and last name who have information in the grades table
+* join;fname,lname;students,grades // shows first and last name who have information in the grades table
 
 
