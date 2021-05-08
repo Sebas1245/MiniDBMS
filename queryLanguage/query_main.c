@@ -1,5 +1,4 @@
 #include "query_main.h"
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -95,6 +94,16 @@ char **parseAttr(char *attr_raw) {
 // Retuns: Array of Indexes
 int scan_table_student(char *query_raw, student_table *students, int *r) {
   int counter = 0;
+
+  if (strcmp(query_raw, "") == 0) {
+    for (i = 0; i < students->cant; i++) {
+      p[i] = i;
+    }
+    return students->cant;
+  }
+
+
+
   char **query = parseQuery(query_raw);
   int i, j;
 
