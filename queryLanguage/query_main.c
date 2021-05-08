@@ -97,6 +97,14 @@ int scan_table_student(char *query_raw, student_table *students, int *r) {
   int counter = 0;
   char **query = parseQuery(query_raw);
   int i, j;
+  
+
+  if (strcmp(query_raw, "") == 0) {
+    for (i = 0; i < students->cant; i++) {
+      p[i] = i;
+    }
+    return students->cant;
+  }
 
   for (i = 0; i < students->cant; i++) {
     if (strcmp(query[0], "student_id") == 0) {
@@ -210,7 +218,7 @@ char *query_table_student(char *attributes, char *query,
                           student_table *students_list) {
   int p[1000];
   char *result = malloc(10000);
-  int len = scan_table_student(query, students_list, p);
+  int len =  scan_table_student(query, students_list, p);
   char **attr = parseAttr(attributes);
   int i, j;
 
@@ -306,36 +314,35 @@ int insert_to_table_student(char *val_raw, char *attr_raw,
       students_list->student_records[size].student_id = atoi(val[i]);
       printf("%d", atoi(val[i]));
     }
-    // if (strcmp(attr[i], "fname") == 0)
-    // {
-    //     strcpy(students_list->student_records[size].fname, val[i]);
-    // }
-    // if (strcmp(attr[i], "lname") == 0)
-    // {
-    //     strcpy(students_list->student_records[size].lname, val[i]);
-    // }
-    // if (strcmp(attr[i], "sex") == 0)
-    // {
-    //     strcpy(&students_list->student_records[size].sex, val[i]);
-    // }
-    // if (strcmp(attr[i], "status") == 0)
-    // {
-    //     strcpy(students_list->student_records[size].status, val[i]);
-    // }
-    // if (strcmp(attr[i], "scholarship") == 0)
-    // {
-    //     students_list->student_records[size].scholarship = atoi(val[i]);
-    // }
-    // if (strcmp(attr[i], "semester") == 0)
-    // {
-    //     students_list->student_records[size].semester = atoi(val[i]);
-    // }
-    // if (strcmp(attr[i], "cumgrade") == 0)
-    // {
-    //     double cumgrade;
-    //     sscanf(val[1], "%lf", &cumgrade);
-    //     students_list->student_records[size].cumgrade = cumgrade;
-    // }
+    if (strcmp(attr[i], "fname") == 0)
+    {
+        strcpy(students_list->student_records[size].fname, val[i]);
+    }
+    if (strcmp(attr[i], "lname") == 0)
+    {
+        strcpy(students_list->student_records[size].lname, val[i]);
+    }
+    if (strcmp(attr[i], "sex") == 0)
+    {
+        strcpy(&students_list->student_records[size].sex, val[i]);
+    }
+    if (strcmp(attr[i], "status") == 0)
+    {
+        strcpy(students_list->student_records[size].status, val[i]);
+    }
+    if (strcmp(attr[i], "scholarship") == 0)
+    {
+        students_list->student_records[size].scholarship = atoi(val[i]);
+    }
+    if (strcmp(attr[i], "semester") == 0)
+    {
+        students_list->student_records[size].semester = atoi(val[i]);
+    }
+    if (strcmp(attr[i], "cumgrade") == 0)
+    {
+        double cumgrade = atof()
+        students_list->student_records[size].cumgrade = cumgrade;
+    }
   }
   students_list->cant++;
   return 0;
