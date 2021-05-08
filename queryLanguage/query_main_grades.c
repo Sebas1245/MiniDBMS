@@ -16,7 +16,7 @@
 Inputs: cumgrade,<,70
 */
 char **parseQueryGrades(char *query_raw) {
-  char **query = (char **)malloc(sizeof(char *) * 100);
+  char **query = (char **)malloc(sizeof(char *) * 8);
   int j;
   for (j = 0; j < 8; j++) {
     query[j] = (char *)malloc(50 * sizeof(char));
@@ -31,6 +31,7 @@ char **parseQueryGrades(char *query_raw) {
     strcpy(query[i++], ptr);
     ptr = strtok(NULL, delim);
   }
+  memset(line, '\0', sizeof(line));
   return query;
 }
 
@@ -55,10 +56,10 @@ char *trimWhitespaceGrades(char *str) {
 Inputs: fname,lname | *
 */
 char **parseAttrGrades(char *attr_raw) {
-  char **attr = (char **)malloc(sizeof(char *) * 8);
+  char **attr = (char **)malloc(sizeof(char *) * 5);
 
   int j;
-  for (j = 0; j < 8; j++) {
+  for (j = 0; j < 5; j++) {
     attr[j] = (char *)malloc(50 * sizeof(char));
   }
 
@@ -85,6 +86,7 @@ char **parseAttrGrades(char *attr_raw) {
     strcpy(attr[i++], ptr);
     ptr = strtok(NULL, delim);
   }
+  memset(line, '\0', sizeof(line));
   return attr;
 }
 
@@ -143,7 +145,7 @@ int scan_table_grade(char *query_raw, grade_table *grades, int *r) {
       }
     }
     if (strcmp(query[0], "school_term") == 0) {
-      if (strcmp(&grades->grade_records[i].school_term, query[2]) == 0) {
+      if (strcmp(grades->grade_records[i].school_term, query[2]) == 0) {
         r[counter] = i;
         counter++;
       }
@@ -173,6 +175,12 @@ int scan_table_grade(char *query_raw, grade_table *grades, int *r) {
     }
   }
 
+  for (int j = 0; j < 8; j++) {
+    memset(query[j], '\0', sizeof(query[j]));
+    free(query[j]);
+  }
+  free(query);
+
   return counter;
 }
 
@@ -182,16 +190,15 @@ grades with a cumulative grade lower than 70. Inputs:  grade_list, attributes:
 fname,lname query: cumgrade,<,70 Outputs: string of grade with attributes;
 */
 
-char *query_table_grade(char *attributes, char *query,
-                        grade_table *grades_list) {
+void query_table_grade(char *attributes, char *query, grade_table *grades_list,
+                       char *result) {
   int p[1000];
-  char *result = malloc(10000);
   int len = scan_table_grade(query, grades_list, p);
   char **attr = parseAttrGrades(attributes);
   int i, j;
 
   for (i = 0; i < len; i++) {
-    for (j = 0; j < sizeof(attr) / sizeof(char); j++) {
+    for (j = 0; j < 5; j++) {
       if (strcmp(attr[j], "student_id") == 0) {
         char student_id[50];
         sprintf(student_id, "%d", grades_list->grade_records[p[i]].student_id);
@@ -206,7 +213,7 @@ char *query_table_grade(char *attributes, char *query,
         strcat(result, "\t");
       }
       if (strcmp(attr[j], "course") == 0) {
-        strcat(result, &grades_list->grade_records[p[i]].course);
+        strcat(result, grades_list->grade_records[p[i]].course);
         strcat(result, "\t");
       }
       if (strcmp(attr[j], "school_term") == 0) {
@@ -224,7 +231,11 @@ char *query_table_grade(char *attributes, char *query,
     strcat(result, end);
   }
 
-  return result;
+  for (int j = 0; j < 5; j++) {
+    memset(attr[j], '\0', sizeof(attr[j]));
+    free(attr[j]);
+  }
+  free(attr);
 }
 
 // Completed
@@ -253,44 +264,36 @@ int insert_to_table_grade(char *val_raw, char *attr_raw,
   int size = grades_list->cant;
   // TODO: Handle Mismatch of size between val and attr
   // TODO: Handle grade Table Capacity
-  for (i = 0; i < sizeof(attr) / sizeof(char); i++) {
-    printf("'%s'\n", attr[i]);
-    printf("'%s'\n", val[i]);
+  for (i = 0; i < 5; i++) {
+    if (strcmp(attr[i], "enrollment_id") == 0) {
+      grades_list->grade_records[size].enrollment_id = atoi(val[i]);
+    }
     if (strcmp(attr[i], "student_id") == 0) {
       grades_list->grade_records[size].student_id = atoi(val[i]);
-      printf("%s", atoi(val[i]));
     }
-    // if (strcmp(attr[i], "fname") == 0)
-    // {
-    //     strcpy(grades_list->grade_records[size].fname, val[i]);
-    // }
-    // if (strcmp(attr[i], "lname") == 0)
-    // {
-    //     strcpy(grades_list->grade_records[size].lname, val[i]);
-    // }
-    // if (strcmp(attr[i], "sex") == 0)
-    // {
-    //     strcpy(&grades_list->grade_records[size].sex, val[i]);
-    // }
-    // if (strcmp(attr[i], "status") == 0)
-    // {
-    //     strcpy(grades_list->grade_records[size].status, val[i]);
-    // }
-    // if (strcmp(attr[i], "scholarship") == 0)
-    // {
-    //     grades_list->grade_records[size].scholarship = atoi(val[i]);
-    // }
-    // if (strcmp(attr[i], "semester") == 0)
-    // {
-    //     grades_list->grade_records[size].semester = atoi(val[i]);
-    // }
-    // if (strcmp(attr[i], "cumgrade") == 0)
-    // {
-    //     double cumgrade;
-    //     sscanf(val[1], "%lf", &cumgrade);
-    //     grades_list->grade_records[size].cumgrade = cumgrade;
-    // }
+    if (strcmp(attr[i], "course") == 0) {
+      strcpy(grades_list->grade_records[size].course, val[i]);
+    }
+    if (strcmp(attr[i], "school_term") == 0) {
+      strcpy(grades_list->grade_records[size].school_term, val[i]);
+    }
+    if (strcmp(attr[i], "grade") == 0) {
+      double cumgrade = atof(val[i]);
+      grades_list->grade_records[size].grade = cumgrade;
+    }
   }
+
+  for (int j = 0; j < 8; j++) {
+    memset(val[j], '\0', sizeof(val[j]));
+    free(val[j]);
+  }
+  for (int j = 0; j < 5; j++) {
+    memset(attr[j], '\0', sizeof(attr[j]));
+    free(attr[j]);
+  }
+  free(val);
+  free(attr);
+
   grades_list->cant++;
   return 0;
 }

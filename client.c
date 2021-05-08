@@ -11,7 +11,7 @@ int main(int argc, char const *argv[]) {
   struct sockaddr_in serv_addr;
   char *hello = "Hello from client";
   char clientReply[1024] = {0};
-  char serverMsg[1024] = {0};
+  char serverMsg[10024] = {0};
 
   if ((sock = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
     printf("\n Socket creation error \n");
@@ -48,6 +48,9 @@ int main(int argc, char const *argv[]) {
         else
           printf("Welcome to your MiniDBMS!\n");
       }
+
+      memset(clientReply, '\0', sizeof(clientReply));
+      memset(serverMsg, '\0', sizeof(serverMsg));
       continue;
     }
 
@@ -64,12 +67,16 @@ int main(int argc, char const *argv[]) {
     printf("Now, type your query:\n");
     fgets(clientReply, 1024, stdin);
     while (clientReply[0] == '\n') {
+      memset(clientReply, '\0', sizeof(clientReply));
       fgets(clientReply, 1024, stdin);
     }
     send(sock, clientReply, sizeof(clientReply), 0);
     if (recv(sock, serverMsg, sizeof(serverMsg), 0) > 0) {
       printf("Result:\n%s\n", serverMsg);
     }
+
+    memset(clientReply, '\0', sizeof(clientReply));
+    memset(serverMsg, '\0', sizeof(serverMsg));
   }
 
   return 0;

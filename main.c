@@ -52,7 +52,7 @@ int main() {
   // Object to store all grades records
   grade_table* grades = malloc(sizeof(grade_table));
 
-  char json_line[1000] = "";
+  char json_line[10000] = "";
   char line[1000];
 
   if (fStudents == NULL) {
@@ -95,31 +95,38 @@ int main() {
   // ---- Query Table Test --- //
   printf("Query Table Test\n");
   // Test * Should return fname,lname parameters of student with id 892
-  char* result = query_table_student("sex,status,fname,lname",
-                                     "student_id,=,892", students);
+  char result[10000] = {0};
+  query_table_student("sex,status,fname,lname", "student_id,=,892", students,
+                      result);
+  printf("Hola\n");
+  fflush(stdout);
   printf("%s", result);
 
   // --- Especial case int double values in table
   // Test * Should return sex attr parameters of student with id 892
-  char* result2 =
-      query_table_student("scholarship", "student_id,=,892", students);
-  printf("%s", result2);
+  memset(result, '\0', 10000);
+  query_table_student("scholarship", "student_id,=,892", students, result);
+  printf("%s", result);
 
   // Test * Should return student_id attr parameters of student with id 892
-  char* result3 =
-      query_table_student("student_id", "student_id,=,892", students);
-  printf("%s", result3);
+  // char* result3 =
+  //     query_table_student("student_id", "student_id,=,892", students);
+  // printf("%s", result3);
 
   //  Test * Should return cumgrade attr parameters of student with id 892
-  char* result4 = query_table_student("cumgrade", "student_id,=,892", students);
-  printf("%s", result4);
+  // char* result4 = query_table_student("cumgrade", "student_id,=,892",
+  // students); printf("%s", result4);
 
   //  Test * Should return cumgrade attr parameters of student with id 892
-  char* result5 = query_table_student("*", "student_id,<,892", students);
-  printf("%s", result5);
+  // char* result5 = query_table_student("*", "student_id,<,892", students);
+  // printf("%s", result5);
   // select;*;students;student_id,=,656
   // select;sex,status,fname,lname;students;student_id,=,435
   // select;*;students;student_id,<,656
+  // select;*;students;student_id,<,1000
+  // select;*;grades;student_id,<,1000
+  //
+  //
   // gcc -O -o server ./jsonparser/mjson/mjson.c ./jsonparser/structsmappings.c
   // ./queryLanguage/query_main.c main.c
   // ---- Query Grade Table Test --- //
@@ -150,8 +157,10 @@ int main() {
     char* result5 = query_table_student("*","student_id,==,892",students);
     printf("%s", result5);
   */
-  insert_to_table_student("920,Chris,Alvar,M,Local,0,6,98.3","*",students);
-  int commitStudents = commitToDBStudents(students);
+  printf("pre-insert\n");
+  fflush(stdout);
+  insert_to_table_student("920,Chris,Alvar,M,Local,0,6,98.3", "*", students);
+  // int commitStudents = commitToDBStudents(students);
 
   // #endif
 

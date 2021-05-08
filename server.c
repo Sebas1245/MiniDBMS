@@ -13,12 +13,12 @@
 
 #include "jsonparser/structsmappings.h"
 #include "queryLanguage/query_main.h"
-// #include "queryLanguage/query_main_grades.h"
+#include "queryLanguage/query_main_grades.h"
 
 char cwd[FILENAME_MAX];
 
 char **parseLine(char *line_raw) {
-  char **query = (char **)malloc(sizeof(char *) * 100);
+  char **query = (char **)malloc(sizeof(char *) * 8);
   int j;
   for (j = 0; j < 8; j++) {
     query[j] = (char *)malloc(50 * sizeof(char));
@@ -33,6 +33,7 @@ char **parseLine(char *line_raw) {
     strcpy(query[i++], ptr);
     ptr = strtok(NULL, delim);
   }
+  memset(line, '\0', sizeof(line));
   return query;
 }
 
@@ -90,8 +91,8 @@ void kill_handler(int signal) {
 int main(int argc, char *argv[]) {
   int socket_desc, new_socket, c;
   struct sockaddr_in server, client;
-  char clientMsg[1024] = {0};
-  char serverReply[1024] = {0};
+  char clientMsg[1024];
+  char serverReply[10024];
   char configCreds[1024];
 
   // load config file data
@@ -170,8 +171,10 @@ int main(int argc, char *argv[]) {
           // Object to store all grades records
           grade_table *grades = malloc(sizeof(grade_table));
 
-          char json_line[1000] = "";
-          char line[1000];
+          size_t nJsonLine = 10000;
+          char *json_line = malloc(nJsonLine);
+          size_t nLine = 1000;
+          char *line = malloc(nLine);
 
           if (fStudents == NULL) {
             printf("Could not open students file");
@@ -184,18 +187,18 @@ int main(int argc, char *argv[]) {
           }
 
           // json read by json_student_read must be in one line_st
-          while (fgets(line, sizeof(line), fStudents)) {
+          while (fgets(line, nLine, fStudents)) {
             strcat(json_line, line);
           }
 
           // function that convers json objects into C objects
           int statusS = json_student_read(json_line, students);
 
-          memset(line, 0, 1000);
-          memset(json_line, 0, 1000);
+          memset(json_line, '\0', nJsonLine);
+          memset(line, '\0', nLine);
 
           // json read by json_student_read must be in one line
-          while (fgets(line, sizeof(line), fGrade)) {
+          while (fgets(line, nLine, fGrade)) {
             strcat(json_line, line);
           }
 
@@ -214,21 +217,24 @@ int main(int argc, char *argv[]) {
             return 1;
           }
 
-          memset(line, 0, 1000);
-          memset(json_line, 0, 1000);
+          memset(json_line, '\0', nJsonLine);
+          memset(line, '\0', nLine);
+          free(json_line);
+          free(line);
 
           fclose(fGrade);
           fclose(fStudents);
 
           // TODO: return query results
           char **query = parseLine(clientMsg);
+          char *result = malloc(10024);
           if (strcmp(query[0], "select") == 0) {
             if (strcmp(query[2], "students") == 0) {
-              char *result = query_table_student(query[1], query[3], students);
+              query_table_student(query[1], query[3], students, result);
               snprintf(serverReply, sizeof(serverReply), "%s", result);
             } else if (strcmp(query[2], "grades") == 0) {
-              // char *result = query_table_grade(query[1], query[3], grades);
-              // snprintf(serverReply, sizeof(serverReply), "%s", result);
+              query_table_grade(query[1], query[3], grades, result);
+              snprintf(serverReply, sizeof(serverReply), "%s", result);
             } else {
               snprintf(serverReply, sizeof(serverReply), "Wrong select: %s",
                        clientMsg);
@@ -237,6 +243,7 @@ int main(int argc, char *argv[]) {
             if (strcmp(query[1], "students") == 0) {
               insert_to_table_student(query[3], query[2], students);
             } else if (strcmp(query[1], "grades") == 0) {
+              insert_to_table_grade(query[3], query[2], grades);
             } else {
               snprintf(serverReply, sizeof(serverReply), "Wrong insert: %s",
                        clientMsg);
@@ -255,6 +262,13 @@ int main(int argc, char *argv[]) {
 
           send(new_socket, serverReply, sizeof(serverReply), 0);
 
+          memset(result, '\0', sizeof(result));
+          for (int j = 0; j < 8; j++) {
+            memset(query[j], '\0', sizeof(query[j]));
+            free(query[j]);
+          }
+          free(result);
+          free(query);
           // Commiting Changes to the DB
           int commitStudents = commitToDBStudents(students);
           if (commitStudents != 0) {
@@ -267,7 +281,13 @@ int main(int argc, char *argv[]) {
             printf("error commiting changes to the database");
             return 1;
           }
+
+          free(students);
+          free(grades);
         }
+
+        memset(clientMsg, '\0', sizeof(clientMsg));
+        memset(serverReply, '\0', sizeof(serverReply));
       }
     }
     if (new_socket < 0) {

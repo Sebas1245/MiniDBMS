@@ -1,4 +1,5 @@
 #include "query_main.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -15,7 +16,7 @@
 Inputs: cumgrade,<,70
 */
 char **parseQuery(char *query_raw) {
-  char **query = (char **)malloc(sizeof(char *) * 100);
+  char **query = (char **)malloc(sizeof(char *) * 8);
   int j;
   for (j = 0; j < 8; j++) {
     query[j] = (char *)malloc(50 * sizeof(char));
@@ -30,6 +31,7 @@ char **parseQuery(char *query_raw) {
     strcpy(query[i++], ptr);
     ptr = strtok(NULL, delim);
   }
+  memset(line, '\0', sizeof(line));
   return query;
 }
 
@@ -87,6 +89,7 @@ char **parseAttr(char *attr_raw) {
     strcpy(attr[i++], ptr);
     ptr = strtok(NULL, delim);
   }
+  memset(line, '\0', sizeof(line));
   return attr;
 }
 
@@ -94,19 +97,16 @@ char **parseAttr(char *attr_raw) {
 // Retuns: Array of Indexes
 int scan_table_student(char *query_raw, student_table *students, int *r) {
   int counter = 0;
-
-  if (strcmp(query_raw, "") == 0) {
-    for (i = 0; i < students->cant; i++) {
-      p[i] = i;
-    }
-    return students->cant;
-  }
-
-
-
-  char **query = parseQuery(query_raw);
   int i, j;
 
+  // if (strcmp(query_raw, "") == 0) {
+  //   for (i = 0; i < students->cant; i++) {
+  //     r[i] = i;
+  //   }
+  //   return students->cant;
+  // }
+
+  char **query = parseQuery(query_raw);
   for (i = 0; i < students->cant; i++) {
     if (strcmp(query[0], "student_id") == 0) {
       if (strcmp(query[1], "<") == 0) {
@@ -203,6 +203,12 @@ int scan_table_student(char *query_raw, student_table *students, int *r) {
     }
   }
 
+  for (int j = 0; j < 8; j++) {
+    memset(query[j], '\0', sizeof(query[j]));
+    free(query[j]);
+  }
+  free(query);
+
   return counter;
 }
 
@@ -215,10 +221,9 @@ Outputs:
     string of student with attributes;
 */
 
-char *query_table_student(char *attributes, char *query,
-                          student_table *students_list) {
+void query_table_student(char *attributes, char *query,
+                         student_table *students_list, char *result) {
   int p[1000];
-  char *result = malloc(10000);
   int len = scan_table_student(query, students_list, p);
   char **attr = parseAttr(attributes);
   int i, j;
@@ -263,7 +268,7 @@ char *query_table_student(char *attributes, char *query,
         strcat(result, "\t");
       }
       if (strcmp(attr[j], "cumgrade") == 0) {
-        char s[50] = {0};
+        char s[50];
         sprintf(s, "%lf", students_list->student_records[p[i]].cumgrade);
         strcat(result, s);
         strcat(result, "\t");
@@ -272,8 +277,11 @@ char *query_table_student(char *attributes, char *query,
     const char *end = "\n";
     strcat(result, end);
   }
-
-  return result;
+  for (int j = 0; j < 8; j++) {
+    memset(attr[j], '\0', sizeof(attr[j]));
+    free(attr[j]);
+  }
+  free(attr);
 }
 
 // Completed
@@ -309,46 +317,44 @@ int insert_to_table_student(char *val_raw, char *attr_raw,
     return 1;
   }
   for (i = 0; i < sizeof(attr) / sizeof(char); i++) {
-    printf("'%s'\n", attr[i]);
-    printf("'%s'\n", val[i]);
     if (strcmp(attr[i], "student_id") == 0) {
       students_list->student_records[size].student_id = atoi(val[i]);
-      printf("%d", atoi(val[i]));
     }
-    if (strcmp(attr[i], "fname") == 0)
-    {
-        strcpy(students_list->student_records[size].fname, val[i]);
+    if (strcmp(attr[i], "fname") == 0) {
+      strcpy(students_list->student_records[size].fname, val[i]);
     }
-    if (strcmp(attr[i], "lname") == 0)
-    {
-        strcpy(students_list->student_records[size].lname, val[i]);
+    if (strcmp(attr[i], "lname") == 0) {
+      strcpy(students_list->student_records[size].lname, val[i]);
     }
-    if (strcmp(attr[i], "sex") == 0)
-    {
-        strcpy(&students_list->student_records[size].sex, val[i]);
+    if (strcmp(attr[i], "sex") == 0) {
+      students_list->student_records[size].sex = (val[i] == "M") ? 'M' : 'F';
     }
-    if (strcmp(attr[i], "status") == 0)
-    {
-        strcpy(students_list->student_records[size].status, val[i]);
+    if (strcmp(attr[i], "status") == 0) {
+      strcpy(students_list->student_records[size].status, val[i]);
     }
-    if (strcmp(attr[i], "scholarship") == 0)
-    {
-        students_list->student_records[size].scholarship = atoi(val[i]);
+    if (strcmp(attr[i], "scholarship") == 0) {
+      students_list->student_records[size].scholarship = atoi(val[i]);
     }
-    if (strcmp(attr[i], "semester") == 0)
-    {
-        students_list->student_records[size].semester = atoi(val[i]);
+    if (strcmp(attr[i], "semester") == 0) {
+      students_list->student_records[size].semester = atoi(val[i]);
     }
-    if (strcmp(attr[i], "cumgrade") == 0)
-    {
-        double cumgrade = atof(val[i]);
-        //sscanf(val[1], "%lf", &cumgrade);
-        
-        students_list->student_records[size].cumgrade = cumgrade;
+    if (strcmp(attr[i], "cumgrade") == 0) {
+      double cumgrade = atof(val[i]);
+      students_list->student_records[size].cumgrade = cumgrade;
     }
   }
-  students_list->cant++;
+  for (int j = 0; j < 8; j++) {
+    memset(val[j], '\0', sizeof(val[j]));
+    free(val[j]);
+  }
+  for (int j = 0; j < 8; j++) {
+    memset(attr[j], '\0', sizeof(attr[j]));
+    free(attr[j]);
+  }
+  free(val);
+  free(attr);
 
+  students_list->cant++;
 
   return 0;
 }
