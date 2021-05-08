@@ -150,7 +150,8 @@ int main() {
     char* result5 = query_table_student("*","student_id,==,892",students);
     printf("%s", result5);
   */
-  // insert_to_table_student("900,Chris,Alvar,M,Local,0,6,98.3","*",students);
+  insert_to_table_student("920,Chris,Alvar,M,Local,0,6,98.3","*",students);
+  int commitStudents = commitToDBStudents(students);
 
   // #endif
 

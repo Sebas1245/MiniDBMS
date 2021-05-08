@@ -5,5 +5,5 @@ SRC =  ./jsonparser/mjson/mjson.c ./jsonparser/structsmappings.c ./queryLanguage
 OBJ = $(SRC:.c = .o)
 
 miniDBMS: $(OBJ)
-	$(CC) $(CFLAGS) -o server $(OBJ) 
+	$(CC) $(CFLAGS) -o server.o $(OBJ) 
 
