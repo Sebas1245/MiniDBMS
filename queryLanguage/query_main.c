@@ -5,6 +5,7 @@
 #include <string.h>
 
 #include "../jsonparser/structsmappings.h"
+#include "query_main_grades.h"
 
 #define ARRAY_LEN(x) (sizeof(x) / sizeof((x)[0]))
 #define ATTR_MAX_STUDENTS 7
@@ -361,8 +362,131 @@ int insert_to_table_student(char *val_raw, char *attr_raw,
   return 0;
 }
 
-// void join_student_with_grades(char *attr_raw, student_table *students_list,
-//                               grade_table *grades_list) {
-//   char **attr = parseAttr(attr_raw);
-//   int x;
-// }
+char **join_attr(char *attr_raw) {
+  char **attr = (char **)malloc(sizeof(char *) * 13);
+
+  int j;
+  for (j = 0; j < 13; j++) {
+    attr[j] = (char *)malloc(50 * sizeof(char));
+    memset(attr[j], '\0', sizeof(attr[j]));
+  }
+
+  if (strcmp(attr_raw, "*") == 0) {
+    strcpy(attr[0], "student_id");
+    strcpy(attr[1], "fname");
+    strcpy(attr[2], "lname");
+    strcpy(attr[3], "sex");
+    strcpy(attr[4], "status");
+    strcpy(attr[5], "scholarship");
+    strcpy(attr[6], "semester");
+    strcpy(attr[7], "cumgrade");
+    strcpy(attr[8], "enrollment_id");
+    strcpy(attr[9], "student_id");
+    strcpy(attr[10], "course");
+    strcpy(attr[11], "school_term");
+    strcpy(attr[12], "grade");
+    return attr;
+  }
+
+  char line[200];
+  strcpy(line, attr_raw);
+  char delim[] = ",";
+  char *ptr = strtok(line, delim);
+  int i = 0;
+  while (ptr != NULL) {
+    strcpy(attr[i++], ptr);
+    ptr = strtok(NULL, delim);
+  }
+  memset(line, '\0', sizeof(line));
+  return attr;
+}
+
+void join_student_with_grades(char *attr_raw, student_table *students_list,
+                              grade_table *grades_list, char *result) {
+  char **attr = join_attr(attr_raw);
+
+  for (int i = 0; i < students_list->cant; i++) {
+    int p[1000];
+    char id[30];
+    snprintf(id, sizeof(id), "student_id,=,%d",
+             students_list->student_records[i].student_id);
+    int len = scan_table_grade(id, grades_list, p);
+
+    for (int k = 0; k < len; k++) {
+      for (int j = 0; j < 13; j++) {
+        if (strcmp(attr[j], "student_id") == 0) {
+          char student_id[50];
+          sprintf(student_id, "%d",
+                  students_list->student_records[i].student_id);
+          strcat(result, student_id);
+          strcat(result, "\t");
+        }
+        if (strcmp(attr[j], "fname") == 0) {
+          strcat(result, students_list->student_records[i].fname);
+          strcat(result, "\t");
+        }
+        if (strcmp(attr[j], "lname") == 0) {
+          strcat(result, students_list->student_records[i].lname);
+          strcat(result, "\t");
+        }
+        if (strcmp(attr[j], "sex") == 0) {
+          char sex[2];
+          sex[0] = students_list->student_records[i].sex;
+          sex[1] = '\0';
+          strcat(result, sex);
+          strcat(result, "\t");
+        }
+        if (strcmp(attr[j], "status") == 0) {
+          strcat(result, students_list->student_records[i].status);
+          strcat(result, "\t");
+        }
+        if (strcmp(attr[j], "scholarship") == 0) {
+          strcat(result,
+                 students_list->student_records[i].scholarship ? "YES" : "NO");
+          strcat(result, "\t");
+        }
+        if (strcmp(attr[j], "semester") == 0) {
+          char semester[50];
+          sprintf(semester, "%d", students_list->student_records[i].semester);
+          strcat(result, semester);
+          strcat(result, "\t");
+        }
+        if (strcmp(attr[j], "cumgrade") == 0) {
+          char s[50];
+          sprintf(s, "%lf", students_list->student_records[i].cumgrade);
+          strcat(result, s);
+          strcat(result, "\t");
+        }
+        if (strcmp(attr[j], "enrollment_id") == 0) {
+          char enrollment_id[50];
+          sprintf(enrollment_id, "%d",
+                  grades_list->grade_records[p[k]].enrollment_id);
+          strcat(result, enrollment_id);
+          strcat(result, "\t");
+        }
+        if (strcmp(attr[j], "course") == 0) {
+          strcat(result, grades_list->grade_records[p[k]].course);
+          strcat(result, "\t");
+        }
+        if (strcmp(attr[j], "school_term") == 0) {
+          strcat(result, grades_list->grade_records[p[k]].school_term);
+          strcat(result, "\t");
+        }
+        if (strcmp(attr[j], "grade") == 0) {
+          char s[50] = {0};
+          sprintf(s, "%lf", grades_list->grade_records[p[k]].grade);
+          strcat(result, s);
+          strcat(result, "\t");
+        }
+      }
+      const char *end = "\n";
+      strcat(result, end);
+    }
+  }
+
+  for (int j = 0; j < 13; j++) {
+    memset(attr[j], '\0', sizeof(attr[j]));
+    free(attr[j]);
+  }
+  free(attr);
+}

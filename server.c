@@ -253,8 +253,12 @@ int main(int argc, char *argv[]) {
                        clientMsg);
             }
           } else if (strcmp(query[0], "join") == 0) {
-            if (strcmp(query[3], "students,grades") == 0) {
-            } else if (strcmp(query[3], "grades,students") == 0) {
+            if (strcmp(query[2], "students,grades") == 0) {
+              join_student_with_grades(query[1], students, grades, result);
+              snprintf(serverReply, sizeof(serverReply), "%s", result);
+            } else if (strcmp(query[2], "grades,students") == 0) {
+              join_grades_with_students(query[1], students, grades, result);
+              snprintf(serverReply, sizeof(serverReply), "%s", result);
             } else {
               snprintf(serverReply, sizeof(serverReply), "Wrong join: %s",
                        clientMsg);
