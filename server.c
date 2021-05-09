@@ -172,12 +172,11 @@ int main(int argc, char *argv[]) {
           // Object to store all grades records
           grade_table *grades = malloc(sizeof(grade_table));
 
-          size_t nJsonLine = 10000;
-          char *json_line = malloc(nJsonLine);
-          memset(json_line, '\0', nJsonLine);
-          size_t nLine = 1000;
-          char *line = malloc(nLine);
-          memset(line, '\0', nLine);
+          size_t nJsonLineSt = countChar("students.json");
+          char *json_lineSt = malloc(nJsonLineSt);
+          char *lineSt = malloc(nJsonLineSt);
+          memset(json_lineSt, '\0', nJsonLineSt);
+         
 
           if (fStudents == NULL) {
             printf("Could not open students file");
@@ -190,23 +189,26 @@ int main(int argc, char *argv[]) {
           }
 
           // json read by json_student_read must be in one line_st
-          while (fgets(line, nLine, fStudents)) {
-            strcat(json_line, line);
+          while (fgets(lineSt, nJsonLineSt, fStudents)) {
+            strcat(json_lineSt, lineSt);
           }
 
           // function that convers json objects into C objects
-          int statusS = json_student_read(json_line, students);
+          int statusS = json_student_read(json_lineSt, students);
 
-          memset(json_line, '\0', nJsonLine);
-          memset(line, '\0', nLine);
+          size_t nJsonLineGr = countChar("grades.json");
+          char *json_lineGr = malloc(nJsonLineGr);
+          char *lineGr = malloc(nJsonLineGr);
+          memset(json_lineGr, '\0', nJsonLineGr);
+
 
           // json read by json_student_read must be in one line
-          while (fgets(line, nLine, fGrade)) {
-            strcat(json_line, line);
+          while (fgets(lineGr, nJsonLineGr, fGrade)) {
+            strcat(json_lineGr, lineGr);
           }
 
           // function that convers json objects into C objects
-          int statusG = json_grade_read(json_line, grades);
+          int statusG = json_grade_read(json_lineGr, grades);
 
           // TO ACCESS RECORDS OF STUDENTS -> students.students.records[i]
           // TO ACCESS RECORDS OF GRADES -> grades.grade_records[i]
@@ -220,10 +222,11 @@ int main(int argc, char *argv[]) {
             return 1;
           }
 
-          memset(json_line, '\0', nJsonLine);
-          memset(line, '\0', nLine);
-          free(json_line);
-          free(line);
+       
+          free(json_lineSt);
+          free(lineSt);
+          free(json_lineGr);
+          free(lineGr);
 
           fclose(fGrade);
           fclose(fStudents);
@@ -269,7 +272,7 @@ int main(int argc, char *argv[]) {
           }
 
           send(new_socket, serverReply, sizeof(serverReply), 0);
-
+          memset(serverReply, '\0', sizeof(serverReply));
           memset(result, '\0', sizeof(result));
           for (int j = 0; j < 8; j++) {
             memset(query[j], '\0', sizeof(query[j]));

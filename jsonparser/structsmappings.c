@@ -121,3 +121,18 @@ int commitToDBGrades(grade_table *obj_list){
 
     return 0;
 }
+
+
+int countChar(char* fileName){
+    int iCount = 0;
+    char filePath[50] = "tables/", ch;
+    strcat(filePath, fileName);
+
+    FILE *ptr = fopen(filePath, "r");
+    if(ptr == NULL) return -1;
+    while((ch = fgetc(ptr))!=EOF){
+        iCount++;
+    }
+    iCount+=10;
+    return sizeof(char)*iCount;
+}

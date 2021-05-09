@@ -59,11 +59,11 @@ int main(int argc, char const *argv[]) {
     printf(
         "\tselect;columnName,columnName2 | *(to print all "
         "columns);tableName;[optional "
-        "where clause]columnName,operator,conditionValue\n");
+        "where clause]columnName,operator,conditionValue;\n");
     printf("- Insert:\n");
-    printf("\tinsert;tableName;columnName1,columName2 | *;value1,value2\n");
+    printf("\tinsert;tableName;*;value1,value2 (must provide values for all columns);\n");
     printf("- Join:\n");
-    printf("\tjoin;columnName,columnName2 | *;tableName1,tableName2\n");
+    printf("\tjoin;columnName,columnName2 | *;tableName1,tableName2;\n");
     printf("Now, type your query:\n");
     fgets(clientReply, 1024, stdin);
     while (clientReply[0] == '\n') {

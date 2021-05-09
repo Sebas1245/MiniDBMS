@@ -52,6 +52,10 @@ int main() {
   // Object to store all grades records
   grade_table* grades = malloc(sizeof(grade_table));
 
+  size_t iCount = countChar("students.json");
+  printf("size_t = %ld", iCount );  
+
+
   char json_line[10000] = "";
   char line[1000];
 
