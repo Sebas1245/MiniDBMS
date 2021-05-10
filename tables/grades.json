@@ -1,0 +1,5 @@
+{"grades": [
+	{"enrollment_id": 234, "student_id": 654, "course": "Algorithms", "school_term": "Fall 2020", "grade": 98.400000},
+	{"enrollment_id": 1, "student_id": 654, "course": "Math", "school_term": "Spring 2021", "grade": 90.000000},
+	{"enrollment_id": 44, "student_id": 654, "course": "Science", "school_term": "Spring 2021", "grade": 90.000000}
+]}
